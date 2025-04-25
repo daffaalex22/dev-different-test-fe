@@ -1,4 +1,5 @@
 import { PropertyMap } from '@/components/PropertyMap';
+import { useAuth } from '@/hooks/useAuth';
 
 // Example data, should be from API
 const sampleProperties = [
@@ -40,6 +41,18 @@ const sampleProperties = [
 ];
 
 export default function PropertiesMapPage() {
+  const { user, loading } = useAuth()
+
+  console.log("User", user);
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (!user) {
+    return <div>Please log in to view the map</div>
+  }
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto p-4">
