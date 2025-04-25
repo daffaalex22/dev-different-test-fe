@@ -68,6 +68,7 @@ const mapOptions = {
 
 export function PropertyMap({ properties, center }: PropertyMapProps) {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null);
 
   return (
     <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''}>
@@ -85,9 +86,23 @@ export function PropertyMap({ properties, center }: PropertyMapProps) {
           >
             <div
               onClick={() => setSelectedProperty(property)}
-              className="cursor-pointer transform transition-transform hover:scale-105 whitespace-nowrap"
+              onMouseEnter={() => setHoveredProperty(property)}
+              onMouseLeave={() => setHoveredProperty(null)}
+              className="cursor-pointer relative"
             >
-              <div className="inline-block bg-black/90 text-white px-4 py-1.5 rounded-full text-sm font-medium tracking-wide shadow-lg">
+              {hoveredProperty?.id === property.id && (
+                <div className="absolute bottom-full mb-2 w-48 h-32 rounded-lg overflow-hidden">
+                  <img
+                    src={property.imageUrl}
+                    alt={property.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium tracking-wide shadow-lg transition-all ${hoveredProperty?.id === property.id
+                  ? 'bg-white text-black'
+                  : 'bg-black/90 text-white'
+                }`}>
                 {property.price}
               </div>
             </div>
@@ -116,6 +131,9 @@ export function PropertyMap({ properties, center }: PropertyMapProps) {
     </LoadScript>
   );
 }
+
+
+
 
 
 
