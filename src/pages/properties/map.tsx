@@ -77,7 +77,7 @@ export default function PropertiesMapPage() {
           lat?: string;
           lng?: string;
           price: string | number;
-          imageUrl?: string;
+          image_url?: string;
           title?: string;
         }
 
@@ -91,7 +91,7 @@ export default function PropertiesMapPage() {
             },
             price: `${formatPrice(item.price)}`,
             numericPrice,
-            imageUrl: item.imageUrl || 'https://picsum.photos/400/300?random=1',
+            imageUrl: item.image_url || 'https://picsum.photos/400/300?random=1',
             title: item.title || 'Property'
           };
         });
