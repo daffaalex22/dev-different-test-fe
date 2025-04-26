@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useRouter } from 'next/router';
+import { toast } from 'sonner';
 
 interface Property {
   id: string;
@@ -13,9 +14,20 @@ interface Property {
     lng: number;
   };
   price: string;
-  numericPrice: number;
+  numericPrice?: number;
   imageUrl: string;
   title: string;
+}
+
+interface RawProperty {
+  id: string | number;
+  latitude?: string;
+  longitude?: string;
+  lat?: string;
+  lng?: string;
+  price: string | number;
+  image_url?: string;
+  title?: string;
 }
 
 function formatPrice(price: number | string): string {
@@ -28,6 +40,26 @@ function formatPrice(price: number | string): string {
   } else {
     return `$\u00A0${numPrice}`;
   }
+}
+
+export function parseFormattedPrice(formattedPrice: string): number {
+  // Remove '$' and any whitespace
+  const cleanPrice = formattedPrice.replace(/[$\s]/g, '');
+
+  // Handle millions (M)
+  if (cleanPrice.includes('M')) {
+    const baseNumber = parseFloat(cleanPrice.replace('M', ''));
+    return baseNumber * 1000000;
+  }
+
+  // Handle thousands (K)
+  if (cleanPrice.includes('K')) {
+    const baseNumber = parseFloat(cleanPrice.replace('K', ''));
+    return baseNumber * 1000;
+  }
+
+  // Handle regular numbers
+  return parseFloat(cleanPrice);
 }
 
 export default function PropertiesMapPage() {
@@ -43,11 +75,59 @@ export default function PropertiesMapPage() {
     router.push('/login');
   };
 
+  const handlePropertyUpdate = async (updatedProperty: Property) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Transform the property data to match RawProperty interface
+      const propertyToUpdate: RawProperty = {
+        id: updatedProperty.id,
+        latitude: updatedProperty.position.lat.toString(),
+        longitude: updatedProperty.position.lng.toString(),
+        price: parseFormattedPrice(updatedProperty.price), // Convert formatted price to number
+        image_url: updatedProperty.imageUrl,
+        title: updatedProperty.title
+      };
+
+      const response = await fetch(`https://dev-different-test-be.onrender.com/properties/${updatedProperty.id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(propertyToUpdate),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update property');
+      }
+
+      // Update local state
+      setProperties(prevProperties =>
+        prevProperties.map(prop =>
+          prop.id === updatedProperty.id
+            ? updatedProperty
+            : prop
+        )
+      );
+
+      toast.success('Property updated successfully');
+    } catch (error) {
+      console.error('Error updating property:', error);
+      toast.error('Failed to update property');
+    }
+  };
+
   // Calculate the absolute min and max prices from the data
   const minMaxPrices = properties.length > 0
     ? {
-      min: Math.min(...properties.map(p => p.numericPrice)),
-      max: Math.max(...properties.map(p => p.numericPrice))
+      min: Math.min(...properties.map(p => p.numericPrice).filter((n): n is number => typeof n === 'number')),
+      max: Math.max(...properties.map(p => p.numericPrice).filter((n): n is number => typeof n === 'number'))
     }
     : { min: 0, max: 10000000 };
 
@@ -77,17 +157,6 @@ export default function PropertiesMapPage() {
         // Handle different response structures
         const propertiesArray = data;
 
-        interface RawProperty {
-          id: string | number;
-          latitude?: string;
-          longitude?: string;
-          lat?: string;
-          lng?: string;
-          price: string | number;
-          image_url?: string;
-          title?: string;
-        }
-
         const mappedProperties = propertiesArray.map((item: RawProperty) => {
           const numericPrice = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
           return {
@@ -106,8 +175,11 @@ export default function PropertiesMapPage() {
         setProperties(mappedProperties);
 
         // Initialize price range based on actual data
-        const minPrice = Math.min(...mappedProperties.map((p: Property) => p.numericPrice));
-        const maxPrice: number = Math.max(...mappedProperties.map((p: Property) => p.numericPrice));
+        const numericPrices: number[] = mappedProperties
+          .map((p: Property) => p.numericPrice)
+          .filter((n: unknown): n is number => typeof n === 'number');
+        const minPrice = Math.min(...numericPrices);
+        const maxPrice: number = Math.max(...numericPrices);
         setPriceRange([minPrice, maxPrice]);
       } catch (error) {
         console.error('Error fetching properties:', error);
@@ -123,7 +195,10 @@ export default function PropertiesMapPage() {
   // Filter properties when price range changes
   useEffect(() => {
     const filtered = properties.filter(
-      property => property.numericPrice >= priceRange[0] && property.numericPrice <= priceRange[1]
+      property =>
+        typeof property.numericPrice === 'number' &&
+        property.numericPrice >= priceRange[0] &&
+        property.numericPrice <= priceRange[1]
     );
     setFilteredProperties(filtered);
   }, [properties, priceRange]);
@@ -173,12 +248,23 @@ export default function PropertiesMapPage() {
           <PropertyMap
             properties={filteredProperties}
             center={{ lat: 40.756795, lng: -73.986139 }}
+            onPropertyUpdate={(property: Property) => {
+              void handlePropertyUpdate(property);
+            }}
           />
         </div>
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
+
 
 
 

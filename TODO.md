@@ -17,7 +17,7 @@
 - [x] Render a map component centered on a default location
 - [ ] Implement marker CRUD functionality:
   - [ ] Allow users to add markers to the map
-  - [ ] Enable users to edit existing markers
+  - [x] Enable users to edit existing markers
   - [ ] Provide functionality to delete markers
 - [x] Ensure markers are linked to the authenticated user
 - [x] Implement RLS policies so users can only access their own markers
@@ -35,7 +35,7 @@
 - [x] Choose a UI library for styling (e.g., [shadcn/ui](https://ui.shadcn.com/))
 - [x] Use `npx shadcn@latest add login-03` to scaffold the login component
 - [ ] Style the map component for better user experience
-  - [ ] Adjust the marker's image and price position on hover
+  - [x] Adjust the marker's image and price position on hover
 - [ ] Make the app responsive for different screen sizes
 
 ## 🚀 Deployment & Testing
