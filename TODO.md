@@ -7,8 +7,8 @@
 - [x] Define a `users` table in Supabase to store user information
 - [x] Integrate Supabase’s magic link authentication for user login
 - [x] Ensure users receive a magic link via email to authenticate
-- [ ] Enable Row-Level Security (RLS) on the `users` table
-- [ ] Set policies to ensure users can only access their own data
+- [x] Enable Row-Level Security (RLS) on the `users` table
+- [x] Set policies to ensure users can only access their own data
 
 ## 🗺️ Map and Markers
 
@@ -19,16 +19,16 @@
   - [ ] Allow users to add markers to the map
   - [ ] Enable users to edit existing markers
   - [ ] Provide functionality to delete markers
-- [ ] Ensure markers are linked to the authenticated user
-- [ ] Implement RLS policies so users can only access their own markers
+- [x] Ensure markers are linked to the authenticated user
+- [x] Implement RLS policies so users can only access their own markers
 
-## 📝 CRUD Functionality
+## 📝 CRUD Functionality (Backend)
 
-- [ ] Define the schema for marker data in Supabase (e.g., latitude, longitude, description)
-- [ ] Allow users to add new markers and save them in Supabase
-- [ ] Fetch and display markers associated with the authenticated user
-- [ ] Enable users to edit marker details and update them in Supabase
-- [ ] Provide functionality for users to delete their markers
+- [x] Define the schema for marker data in Supabase (e.g., latitude, longitude, description)
+- [x] Allow users to add new markers and save them in Supabase
+- [x] Fetch and display markers associated with the authenticated user
+- [x] Enable users to edit marker details and update them in Supabase
+- [x] Provide functionality for users to delete their markers
 
 ## 🎨 Styling
 
@@ -40,12 +40,12 @@
 
 ## 🚀 Deployment & Testing
 
-- [ ] Configure environment variables for Supabase and Google Maps API
+- [x] Configure environment variables for Supabase and Google Maps API
 - [ ] Ensure the app runs correctly in the development environment
 - [ ] Write tests for authentication flows
 - [ ] Write tests for CRUD marker operations
 - [ ] Validate map interactions and marker functionalities
-- [ ] Choose a hosting platform (e.g., Vercel) for deployment
+- [x] Choose a hosting platform (e.g., Vercel) for deployment
 - [ ] Deploy the app and confirm features work in production
 - [ ] Set up monitoring tools to track performance
 - [ ] Debug any post-deployment issues
