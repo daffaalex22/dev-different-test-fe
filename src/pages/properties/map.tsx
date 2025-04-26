@@ -123,6 +123,39 @@ export default function PropertiesMapPage() {
     }
   };
 
+  const handlePropertyDelete = async (propertyToDelete: Property) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await fetch(`https://dev-different-test-be.onrender.com/properties/${propertyToDelete.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete property');
+      }
+
+      // Update local state by removing the deleted property
+      setProperties(prevProperties =>
+        prevProperties.filter(prop => prop.id !== propertyToDelete.id)
+      );
+
+      toast.success('Property deleted successfully');
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      toast.error('Failed to delete property');
+    }
+  };
+
   // Calculate the absolute min and max prices from the data
   const minMaxPrices = properties.length > 0
     ? {
@@ -251,12 +284,17 @@ export default function PropertiesMapPage() {
             onPropertyUpdate={(property: Property) => {
               void handlePropertyUpdate(property);
             }}
+            onPropertyDelete={(property: Property) => {
+              void handlePropertyDelete(property);
+            }}
           />
         </div>
       </div>
     </div>
   );
 }
+
+
 
 
 

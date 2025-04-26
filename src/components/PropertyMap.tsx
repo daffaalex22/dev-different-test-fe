@@ -17,6 +17,7 @@ interface PropertyMapProps {
   properties: Property[];
   center: { lat: number; lng: number };
   onPropertyUpdate?: (property: Property) => void;
+  onPropertyDelete?: (property: Property) => void;
 }
 
 const mapContainerStyle = {
@@ -68,7 +69,7 @@ const mapOptions = {
   fullscreenControl: false
 };
 
-export function PropertyMap({ properties, center, onPropertyUpdate }: PropertyMapProps) {
+export function PropertyMap({ properties, center, onPropertyUpdate, onPropertyDelete }: PropertyMapProps) {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null);
 
@@ -83,6 +84,13 @@ export function PropertyMap({ properties, center, onPropertyUpdate }: PropertyMa
   const handleSave = (updatedProperty: Property) => {
     if (onPropertyUpdate) {
       onPropertyUpdate(updatedProperty);
+    }
+    handleDialogClose();
+  };
+
+  const handleDelete = (property: Property) => {
+    if (onPropertyDelete) {
+      onPropertyDelete(property);
     }
     handleDialogClose();
   };
@@ -138,10 +146,12 @@ export function PropertyMap({ properties, center, onPropertyUpdate }: PropertyMa
         isOpen={selectedProperty !== null}
         onClose={handleDialogClose}
         onSave={handleSave}
+        onDelete={handleDelete}
       />
     </>
   );
 }
+
 
 
 

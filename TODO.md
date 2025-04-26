@@ -18,7 +18,7 @@
 - [ ] Implement marker CRUD functionality:
   - [ ] Allow users to add markers to the map
   - [x] Enable users to edit existing markers
-  - [ ] Provide functionality to delete markers
+  - [x] Provide functionality to delete markers
 - [x] Ensure markers are linked to the authenticated user
 - [x] Implement RLS policies so users can only access their own markers
 

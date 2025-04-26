@@ -40,9 +40,10 @@ interface PropertyEditDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (property: Property) => void;
+  onDelete: (property: Property) => void;
 }
 
-export function PropertyDialog({ property, isOpen, onClose, onSave }: PropertyEditDialogProps) {
+export function PropertyDialog({ property, isOpen, onClose, onSave, onDelete }: PropertyEditDialogProps) {
   const [editedProperty, setEditedProperty] = useState<Property | null>(property);
 
   // Reset editedProperty when the selected property changes
@@ -53,6 +54,12 @@ export function PropertyDialog({ property, isOpen, onClose, onSave }: PropertyEd
   const handleSave = () => {
     if (editedProperty) {
       onSave(editedProperty);
+    }
+  };
+
+  const handleDelete = () => {
+    if (editedProperty) {
+      onDelete(editedProperty);
     }
   };
 
@@ -124,12 +131,25 @@ export function PropertyDialog({ property, isOpen, onClose, onSave }: PropertyEd
             </div>
           </div>
         )}
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save changes</Button>
+        <DialogFooter className="flex justify-between">
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+          >
+            Delete
+          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave}>
+              Save changes
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
+
 
