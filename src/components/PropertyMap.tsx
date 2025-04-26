@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GoogleMap, LoadScript, OverlayView, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, OverlayView } from '@react-google-maps/api';
 
 interface Property {
   id: string;
@@ -67,7 +67,7 @@ const mapOptions = {
 };
 
 export function PropertyMap({ properties, center }: PropertyMapProps) {
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  // const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [hoveredProperty, setHoveredProperty] = useState<Property | null>(null);
 
   return (
@@ -85,13 +85,15 @@ export function PropertyMap({ properties, center }: PropertyMapProps) {
             mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
           >
             <div
-              onClick={() => setSelectedProperty(property)}
+              // onClick={() => setSelectedProperty(property)}
               onMouseEnter={() => setHoveredProperty(property)}
               onMouseLeave={() => setHoveredProperty(null)}
               className="cursor-pointer relative"
             >
               {hoveredProperty?.id === property.id && (
-                <div className="absolute bottom-full mb-2 w-48 h-32 rounded-lg overflow-hidden">
+                <div
+                  className="relative mb-2 w-48 h-32 rounded-lg overflow-hidden"
+                >
                   <img
                     src={property.imageUrl}
                     alt={property.title}
@@ -109,14 +111,14 @@ export function PropertyMap({ properties, center }: PropertyMapProps) {
           </OverlayView>
         ))}
 
-        {selectedProperty && (
+        {/* {selectedProperty && (
           <InfoWindow
             position={selectedProperty.position}
             onCloseClick={() => setSelectedProperty(null)}
           >
             <div className="max-w-xs">
-              <img 
-                src={selectedProperty.imageUrl} 
+              <img
+                src={selectedProperty.imageUrl}
                 alt={selectedProperty.title}
                 className="w-full h-32 object-cover rounded-t"
               />
@@ -126,7 +128,7 @@ export function PropertyMap({ properties, center }: PropertyMapProps) {
               </div>
             </div>
           </InfoWindow>
-        )}
+        )} */}
       </GoogleMap>
     </LoadScript>
   );
