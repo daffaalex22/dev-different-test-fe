@@ -126,14 +126,14 @@ export default function PropertiesMapPage() {
   if (fetchError) return <div>Error: {fetchError}</div>;
 
   return (
-    <div className="min-h-screen">
+    <div className="bg-muted min-h-svh">
       <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Properties Map</h1>
+        <h1 className="text-2xl font-bold mb-4 text-foreground">Properties Map</h1>
 
         {/* Price range slider */}
         <div className="mb-8 max-w-xl">
           <div className="flex justify-between mb-2">
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium text-foreground">
               Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
             </span>
             <span className="text-sm text-muted-foreground">
@@ -152,14 +152,18 @@ export default function PropertiesMapPage() {
           />
         </div>
 
-        <PropertyMap 
-          properties={filteredProperties}
-          center={{ lat: 40.756795, lng: -73.986139 }}
-        />
+        <div className="rounded-lg overflow-hidden">
+          <PropertyMap
+            properties={filteredProperties}
+            center={{ lat: 40.756795, lng: -73.986139 }}
+          />
+        </div>
       </div>
     </div>
   );
 }
+
+
 
 
 
