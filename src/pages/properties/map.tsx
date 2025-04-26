@@ -3,6 +3,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/router';
 
 interface Property {
   id: string;
@@ -34,6 +36,12 @@ export default function PropertiesMapPage() {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000000]);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
 
   // Calculate the absolute min and max prices from the data
   const minMaxPrices = properties.length > 0
@@ -129,26 +137,36 @@ export default function PropertiesMapPage() {
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4 text-foreground">Properties Map</h1>
 
-        {/* Price range slider */}
-        <div className="mb-8 max-w-xl">
-          <div className="flex justify-between mb-2">
-            <span className="text-sm font-medium text-foreground">
-              Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {filteredProperties.length} properties
-            </span>
+        {/* Price range slider and logout button container */}
+        <div className="mb-8 w-full flex items-center justify-between">
+          <div className="flex-1 max-w-xl">
+            <div className="flex justify-between mb-2">
+              <span className="text-sm font-medium text-foreground">
+                Price Range: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {filteredProperties.length} properties
+              </span>
+            </div>
+
+            <Slider
+              defaultValue={[minMaxPrices.min, minMaxPrices.max]}
+              value={priceRange}
+              min={minMaxPrices.min}
+              max={minMaxPrices.max}
+              step={(minMaxPrices.max - minMaxPrices.min) / 100}
+              onValueChange={(value: [number, number]) => setPriceRange(value)}
+              className="mb-6"
+            />
           </div>
 
-          <Slider
-            defaultValue={[minMaxPrices.min, minMaxPrices.max]}
-            value={priceRange}
-            min={minMaxPrices.min}
-            max={minMaxPrices.max}
-            step={(minMaxPrices.max - minMaxPrices.min) / 100}
-            onValueChange={(value: [number, number]) => setPriceRange(value)}
-            className="mb-6"
-          />
+          <Button
+            variant="destructive"
+            onClick={handleLogout}
+            className="ml-4 flex-1 max-w-xs cursor-pointer"
+          >
+            Logout
+          </Button>
         </div>
 
         <div className="rounded-lg overflow-hidden">
@@ -161,6 +179,9 @@ export default function PropertiesMapPage() {
     </div>
   );
 }
+
+
+
 
 
 
