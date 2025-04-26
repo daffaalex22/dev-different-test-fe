@@ -101,12 +101,19 @@ export function PropertyMap({ properties, center }: PropertyMapProps) {
                   />
                 </div>
               )}
-              <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium tracking-wide shadow-lg transition-all ${hoveredProperty?.id === property.id
-                  ? 'bg-white text-black'
+              {hoveredProperty?.id === property.id &&
+                <div className={`relative inline bottom-[20px] left-[50px] px-4 py-1.5 rounded-full text-sm font-medium tracking-wide shadow-lg transition-all bg-white text-black dark:text-black -z-100}`}>
+                  {property.price}
+                </div>
+              }
+              {hoveredProperty?.id === property.id ||
+                <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium tracking-wide shadow-lg transition-all ${hoveredProperty?.id === property.id
+                  ? ''
                   : 'bg-black/90 text-white'
-                }`}>
-                {property.price}
-              </div>
+                  }`}>
+                  {property.price}
+                </div>
+              }
             </div>
           </OverlayView>
         ))}
@@ -133,6 +140,7 @@ export function PropertyMap({ properties, center }: PropertyMapProps) {
     </LoadScript>
   );
 }
+
 
 
 

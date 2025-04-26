@@ -65,7 +65,6 @@ export default function PropertiesMapPage() {
         }
 
         const { data } = await response.json();
-        console.log('API Response:', data); // Debug log
 
         // Handle different response structures
         const propertiesArray = data;
